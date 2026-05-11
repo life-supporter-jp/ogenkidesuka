@@ -1,318 +1,415 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MP3再生リスト（ページネーション上下表示）</title>
-    <style>
-        body {
-            font-family: "Hiragino Kaku Gothic Pro", "Noto Sans JP", sans-serif;
-            padding: 20px;
-            margin: 0;
-            line-height: 1.6;
-            color: #333;
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .center-text {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .container {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-        }
-        .mp3-item {
-            margin-bottom: 20px;
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            align-items: center;
-            background: #fff;
-        }
-        .mp3-content {
-            flex-grow: 1;
-        }
-        .mp3-item h3 {
-            font-size: 16px;
-            margin: 0 0 10px 0;
-        }
-        audio {
-            width: 100%;
-        }
-        .status {
-            color: #d9534f;
-            font-weight: bold;
-            margin-top: 5px;
-            font-size: 14px;
-        }
-        /* お気に入りスタイル */
-        .favorite-box {
-            margin-left: 15px;
-        }
-        .favorite-box label {
-            cursor: pointer;
-            font-size: 28px;
-        }
-        .favorite-box input[type="checkbox"] + label:before {
-            content: '☆';
-            color: #ccc;
-        }
-        .favorite-box input[type="checkbox"]:checked + label:before {
-            content: '★';
-            color: #f1c40f;
-        }
-        .favorite-box input[type="checkbox"] {
-            display: none;
-        }
-        /* ページネーション */
-        .pagination {
-            text-align: center;
-            padding: 10px 0;
-            overflow-x: auto;
-            white-space: nowrap;
-            margin-bottom: 15px;
-        }
-        .pagination button {
-            background-color: #f8f9fa;
-            border: 1px solid #ccc;
-            padding: 8px 14px;
-            margin: 0 2px;
-            cursor: pointer;
-            font-weight: bold;
-            color: #000;
-            border-radius: 4px;
-        }
-        .pagination button:hover:not(.active) {
-            background-color: #e2e6ea;
-        }
-        .pagination button.active {
-            background-color: #007bff;
-            color: white;
-            border-color: #007bff;
-        }
-        .info-image {
-            display: block;
-            margin: 20px auto;
-            max-width: 100%;
-            height: auto;
-        }
-        .footer-section {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 2px solid #eee;
-        }
-    </style>
-</head>
-<body>
 
-<img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012099.jpg" class="info-image">
 
-<h2>再生するまでの準備時間があります。少しお待ちください。</h2>
-<div class="center-text">３００曲の内の１５曲を選んでみました。</div>
-
-<h2 id="mainTitle">MP3再生リスト</h2>
-
-<div class="pagination top" id="paginationControlsTop"></div>
-<div class="center-text"><small>上部をスライドしてリストを選択してください。</small></div>
-
-<div class="container" id="mp3Container"></div>
-
-<div class="pagination bottom" id="paginationControlsBottom"></div>
-<div class="center-text"><small>スライドしてページを切り替えられます。</small></div>
-
-<script>
-    const mp3Data = [
-        ["軽快でお洒落な電子ピアノのテクノポップス", "103.mp3"],
-        ["ゆったりとしたオーケストラ楽曲", "105.mp3"],
-        ["美しいピアノメロディー", "117.mp3"],
-        ["落ち着いた雰囲気の大人なジャズ", "127.mp3"],
-        ["神秘的で温もりのある美しいヒーリング", "146.mp3"],
-        ["切なく美しいバイオリンピアノサウンド", "158.mp3"],
-        ["バイオリンクラシック", "168.mp3"],
-        ["水辺にいるようなヒーリング系ストリングス", "177.mp3"],
-        ["お洒落なピアノシンセ", "187.mp3"],
-        ["壮大で可愛らしいミュージック", "197.mp3"],
-        ["大人な雰囲気のスロージャズバラード", "210.mp3"],
-        ["キュートでかわいいメロディのポップス", "222.mp3"],
-        ["スウィートでウォームなバラード", "235.mp3"],
-        ["上品 おしゃれ ムード 穏やか 大人", "251.mp3"],
-        ["苦悩をこえて、愛がかなう。ラストシーン", "399.mp3"]
-    ];
-
-    const baseUrl = "https://life-supporter.jp/sp/hxySQ4ff/VjDWurLR/images/MP3/";
-    const mainTitle = document.getElementById("mainTitle");
-    const container = document.getElementById("mp3Container");
-    const paginationControlsTop = document.getElementById("paginationControlsTop");
-    const paginationControlsBottom = document.getElementById("paginationControlsBottom");
-    const FAVORITES_KEY = "mp3Favorites";
-
-    const ITEMS_PER_PAGE = 5;
-    const TOTAL_PAGES = Math.ceil(mp3Data.length / ITEMS_PER_PAGE);
-    let currentPage = 1;
-
-    function loadFavorites() {
-        try {
-            const stored = localStorage.getItem(FAVORITES_KEY);
-            return stored ? JSON.parse(stored) : {};
-        } catch (e) { return {}; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>今どこ救R QR生成</title>
+</p>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<style>
+/* =========================
+   全体共通
+========================= */
+*{
+    box-sizing:border-box;
+}
+/* =========================
+   body
+========================= */
+body{
+    font-family:sans-serif;
+    background:#f4f4f4;
+    margin:0 auto !important;
+    padding:20px;
+    width:100%;
+    max-width:800px;
+    overflow-x:hidden;
+    text-align:center;
+}
+/* =========================
+   画像最適化
+========================= */
+img{
+    max-width:100% !important;
+    height:auto !important;
+    display:block;
+    margin:10px auto;
+}
+/* =========================
+   コンテナ
+========================= */
+.container{
+    background:white;
+    width:100%;
+    max-width:450px;
+    margin:20px auto;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+/* =========================
+   入力欄
+========================= */
+.input-row{
+    margin-bottom:12px;
+    text-align:left;
+}
+label{
+    display:block;
+    margin-bottom:6px;
+    font-weight:bold;
+    color:#555;
+}
+input{
+    width:100%;
+    padding:12px;
+    font-size:16px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    background:#fff;
+}
+/* =========================
+   QR表示
+========================= */
+#finalCanvas{
+    display:block;
+    margin:20px auto;
+    border:1px solid #ccc;
+    width:100%;
+    max-width:350px;
+    height:auto;
+    aspect-ratio:1 / 1;
+    background:white;
+}
+/* =========================
+   ボタン
+========================= */
+.btn{
+    width:100%;
+    padding:15px;
+    font-size:18px;
+    border:none;
+    border-radius:8px;
+    margin-top:10px;
+    cursor:pointer;
+}
+.generate-btn{
+    background:#007bff;
+    color:white;
+}
+.download-btn{
+    background:#28a745;
+    color:white;
+}
+/* =========================
+   テキスト
+========================= */
+.count{
+    font-weight:bold;
+    margin:10px 0;
+}
+.lock{
+    color:red;
+    font-weight:bold;
+    margin-top:10px;
+}
+.note{
+    font-size:14px;
+    margin-bottom:15px;
+    line-height:1.6;
+}
+/* =========================
+   footer
+========================= */
+.footer-info{
+    width:100%;
+    max-width:800px;
+    margin:30px auto;
+}
+.info-text{
+    font-size:16px;
+    line-height:1.8;
+    text-align:left;
+    padding:10px;
+}
+/* =========================
+   スマホ調整
+========================= */
+@media (max-width:768px){
+    body{
+        padding:10px;
     }
-
-    function saveFavorites(favorites) {
-        try {
-            localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
-        } catch (e) { console.error(e); }
+    .container{
+        padding:15px;
     }
-
-    let favorites = loadFavorites();
-
-    function handlePlayAttempt(audioElement, statusElement) {
-        if (audioElement.readyState >= 4) {
-            audioElement.play().catch(e => {});
-            statusElement.textContent = '';
-            return;
-        }
-        statusElement.textContent = '⌛ 準備中...';
-        audioElement.controls = false;
-        
-        const canplaythroughHandler = () => {
-            statusElement.textContent = '✅ 再生準備完了';
-            audioElement.controls = true;
-            audioElement.removeEventListener('canplaythrough', canplaythroughHandler);
-            audioElement.play().catch(e => {
-                statusElement.textContent = '✅ 再生準備完了 (再生ボタンを押してください)';
-            });
-        };
-        audioElement.addEventListener('canplaythrough', canplaythroughHandler);
-        audioElement.load();
+    .btn{
+        font-size:16px;
+        padding:14px;
     }
-
-    function displayList(page) {
-        container.innerHTML = '';
-        const start = (page - 1) * ITEMS_PER_PAGE;
-        const end = start + ITEMS_PER_PAGE;
-        const pageData = mp3Data.slice(start, end);
-
-        pageData.forEach(([title, filename], index) => {
-            const item = document.createElement("div");
-            item.className = "mp3-item";
-            
-            const contentDiv = document.createElement("div");
-            contentDiv.className = "mp3-content";
-
-            const titleElem = document.createElement("h3");
-            titleElem.textContent = `${start + index + 1}. ${title}`;
-
-            const audio = document.createElement("audio");
-            audio.controls = true;
-            audio.setAttribute('controlsList', 'nodownload');
-            audio.oncontextmenu = () => false;
-            
-            const source = document.createElement("source");
-            source.src = baseUrl + filename;
-            source.type = "audio/mpeg";
-            audio.appendChild(source);
-            
-            const statusDiv = document.createElement("div");
-            statusDiv.className = "status";
-            
-            audio.addEventListener('play', (e) => {
-                document.querySelectorAll('audio').forEach(a => {
-                    if (a !== audio && !a.paused) a.pause();
-                });
-                handlePlayAttempt(audio, statusDiv);
-            });
-
-            contentDiv.appendChild(titleElem);
-            contentDiv.appendChild(audio);
-            contentDiv.appendChild(statusDiv);
-
-            const favoriteBox = document.createElement("div");
-            favoriteBox.className = "favorite-box";
-            const checkboxId = `fav-${start + index}`;
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.id = checkboxId;
-            checkbox.checked = favorites[filename] || false;
-
-            const label = document.createElement("label");
-            label.htmlFor = checkboxId;
-
-            checkbox.addEventListener('change', (e) => {
-                favorites[filename] = e.target.checked;
-                saveFavorites(favorites);
-            });
-
-            favoriteBox.appendChild(checkbox);
-            favoriteBox.appendChild(label);
-            item.appendChild(contentDiv);
-            item.appendChild(favoriteBox);
-            container.appendChild(item);
-        });
-        
-        renderPaginationControls(page, paginationControlsTop);
-        renderPaginationControls(page, paginationControlsBottom);
+    .info-text{
+        font-size:15px;
     }
+}
+</style>
 
-    function renderPaginationControls(activePage, targetElement) {
-        targetElement.innerHTML = '';
-        const prevButton = document.createElement('button');
-        prevButton.textContent = '≪ 前へ';
-        prevButton.disabled = activePage === 1;
-        prevButton.onclick = () => changePage(activePage - 1);
-        targetElement.appendChild(prevButton);
 
-        for (let i = 1; i <= TOTAL_PAGES; i++) {
-            const button = document.createElement('button');
-            button.textContent = i;
-            if (i === activePage) button.classList.add('active');
-            button.onclick = () => changePage(i);
-            targetElement.appendChild(button);
-        }
 
-        const nextButton = document.createElement('button');
-        nextButton.textContent = '次へ ≫';
-        nextButton.disabled = activePage === TOTAL_PAGES;
-        nextButton.onclick = () => changePage(activePage + 1);
-        targetElement.appendChild(nextButton);
-    }
+<img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012099.jpg">
 
-    function changePage(page) {
-        if (page >= 1 && page <= TOTAL_PAGES) {
-            currentPage = page;
-            displayList(currentPage);
-            mainTitle.scrollIntoView({ behavior: 'smooth' });
-        }
-    }
+<div class="container">
+    <h2>30日体験お元気ですかメール</h2>
+    <div class="note"><img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012115.jpg" style="width: 400px;"><br></div>
+    <div class="note"><div class="note" style="text-align: center;">一人暮らしの家族がいますか？</div>
+<div class="note" style="text-align: center;">毎日、気にはしているんだけど、毎日電話できないよと思っていませんか？</div>
+<div class="note" style="text-align: center;">自分で毎日電話で見守り確認は大変、ならば誰かに頼るしかありません</div>
+<div class="note" style="text-align: center;">誰かに頼むと費用が大きくかかり負担となります。</div>
+<div class="note" style="text-align: center;"><br></div>
+<div class="note" style="text-align: center;">毎日決まった時間に貴方からのメールを見守りたい方に送ります。</div>
+<div class="note" style="text-align: center;">元気ならあなたに返信メールが来ます。</div>
+<div class="note" style="text-align: center;"><br></div>
+<div class="note" style="text-align: center;">コメントも入っていれば、安心できますね</div>
+<div class="note" style="text-align: center;"><br></div>
+<div class="note" style="text-align: center;">返信メールがない時だけ電話をして確認してください。</div>
+<div class="note" style="text-align: center;">毎日の負担が軽くなるばかりか、話す機会も増えると思います。</div>
+<div class="note" style="text-align: center;"><img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012117.jpg" style="width: 550px;"><br></div>
+<div class="note" style="text-align: center;">こんな方におすすめ</div>
+<div class="note" style="text-align: center;"><br></div>
+<div class="note" style="text-align: center;">遠くに住んでいる両親が心配</div>
+<div class="note" style="text-align: center;">一人暮らしの子供が心配</div>
+<div class="note" style="text-align: center;">単身赴任の家族が心配</div>
+<div class="note" style="text-align: center;"><br></div>
+<div class="note" style="text-align: center;"><img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012118.jpg" style="width: 550px;"><br></div>
+<div class="note" style="text-align: center;">毎日のお元気メールが基本です。</div>
+<div class="note" style="text-align: center;">指定時間にメールします。</div>
+</div>
 
-    displayList(currentPage);
-</script>
-
-<div class="footer-section">
-    <p><b>今回のアプリは如何だったでしょうか？<br>
-    他にも使えるアプリ、脳トレができるゲームや趣味に俳句、和歌などが利用できるサイトをご案内します。</b></p>
-    <p><b>また大事な記録をサーバーに残せるサイトで、何かあった時に情報開示も指定できるサイトです。<br>
-    スマホのID、PWを記録しておくと安心です。</b></p>
-
-    <img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012085.jpg" class="info-image">
-
-    <div style="font-size: 24px; font-weight: bold; margin: 20px 0;">
-        以下より体験版をご確認ください。
-    </div>
-
-    <img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012100.jpg" style="width: 200px;">
-    
-    <div style="margin-top: 10px;">
-        <a href="https://life-supporter.jp/lp/HRSuykFf" style="font-size: 20px; color: #007bff; text-decoration: none; font-weight: bold;">
-            https://life-supporter.jp/lp/HRSuykFf
-        </a>
+    <div style="font-size:14px; margin-top:10px;"><!--StartFragment--><span style="font-weight: bold;"><a href="https://mimamori-supporter.com/" class="site-name site-name-text-link" itemprop="url" style="padding: 0px; margin: 0px; overflow-wrap: break-word; text-decoration: none; font-family: &quot;Hiragino Kaku Gothic ProN&quot;, &quot;Hiragino Sans&quot;, Meiryo, sans-serif; font-size: 18px; background-color: rgb(255, 255, 255);"><span class="site-name-text" itemprop="name about" style="padding: 0px; margin: 0px; overflow-wrap: break-word; font-size: 18px; color: rgb(0, 0, 255);">お元気ですかメール</span></a><span style="font-size: 18px;">詳細</span><span style="font-size: 18px;">ページへ</span></span></div>
+<!--StartFragment--><h2><span style="font-size: 18px;"><a href="https://life-supporter.jp/p/r/oGrwjTsg" target="_blank"><span style="color: rgb(0, 0, 255);">30日体験お元気ですかメール</span><span>申請へ</span></a></span></h2>
+<!--EndFragment--><div style="font-size:14px; margin-top:10px;"><span style="font-weight: bold;"><span style="font-size: 18px;"></span></span><!--EndFragment--></div>
+<div id="limitMessage" class="lock" style="display:none;">
+        本日の無料回数（5回）が終了しました。<br>明日またご利用いただけます。
     </div>
 </div>
 
-</body>
-</html>
+<script>
+// ===== 状態管理と日付リセット =====
+const MAX_FREE_COUNT = 5;
+let today = new Date().toLocaleDateString();
+let lastDate = localStorage.getItem("lastDate");
+let usedCount = Number(localStorage.getItem("usedCount")) || 0;
+
+// 日付が変わっていたらリセット
+if (lastDate !== today) {
+    usedCount = 0;
+    localStorage.setItem("usedCount", 0);
+    localStorage.setItem("lastDate", today);
+}
+
+// ===== 表示更新 =====
+function updateDisplay() {
+    const remain = MAX_FREE_COUNT - usedCount;
+    if (remain <= 0) {
+        document.getElementById("countInfo").innerText = "残り生成回数：0回";
+        document.getElementById("limitMessage").style.display = "block";
+    } else {
+        document.getElementById("countInfo").innerText = "本日残り生成回数：" + remain + "回";
+        document.getElementById("limitMessage").style.display = "none";
+    }
+}
+updateDisplay();
+
+// ===== QR生成 =====
+function generateQRCode() {
+    if (usedCount >= MAX_FREE_COUNT) {
+        alert("本日の無料回数上限に達しました。明日またご利用ください。");
+        return;
+    }
+
+    const name = document.getElementById("nameInput").value.slice(0,20);
+    const contact = document.getElementById("contactInput").value.slice(0,20);
+
+    if (!name || !contact) {
+        alert("名前と連絡先を入力してください");
+        return;
+    }
+
+    const textData = name + "\n" + contact;
+
+    // カウントアップ
+    usedCount++;
+    localStorage.setItem("usedCount", usedCount);
+    updateDisplay();
+
+    const canvas = document.getElementById("finalCanvas");
+    const ctx = canvas.getContext("2d");
+    const size = 350;
+
+    const qr = qrcode(0, 'H');
+    qr.addData(unescape(encodeURIComponent(textData)));
+    qr.make();
+
+    const qrSize = size * 0.70; 
+    const margin = (size - qrSize) / 2;
+    const tileW = qrSize / qr.getModuleCount();
+
+    ctx.fillStyle = "white";
+    ctx.fillRect(0,0,size,size);
+    ctx.fillStyle = "black";
+
+    for (let r=0;r<qr.getModuleCount();r++){
+        for (let c=0;c<qr.getModuleCount();c++){
+            if (qr.isDark(r,c)){
+                ctx.fillRect(margin + c*tileW, margin + r*tileW + 15, tileW, tileW); 
+            }
+        }
+    }
+
+    // 中央文字
+    const labelText = "今どこ救Ｒ";
+    ctx.font = "bold 20px sans-serif";
+    const textWidth = ctx.measureText(labelText).width;
+    ctx.fillStyle="white";
+    ctx.fillRect(size/2 - textWidth/2 -4, size/2+1, textWidth+8, 28);
+    ctx.fillStyle="black";
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    ctx.fillText(labelText, size/2, size/2+15);
+
+    // 上下文字（余白を広く設定）
+    ctx.font="bold 18px sans-serif";
+    ctx.fillText("緊急連絡先", size/2, margin - 15);
+    ctx.fillText("QRから電話", size/2, size - margin + 40);
+}
+
+// ===== 保存 =====
+function downloadQRCodeImage() {
+    const canvas = document.getElementById("finalCanvas");
+    const link = document.createElement("a");
+    link.download = "imadoko_qr.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+}
+</script>
+
+<center><br>
+</center>
+
+<!-- footer -->
+<div class="footer-info">
+    <div class="info-text">
+    今回のアプリは如何だったでしょうか？
+    会員サイト内にある100個のツール、
+    ゲームからのご紹介です。
+    他にも使えるアプリ、
+    脳トレができるゲームや
+    趣味に俳句、和歌などが
+    利用できるサイトをご案内します。
+    また大事な記録をサーバーに残せるサイトで、
+    何かあった時に情報開示も
+    指定できるサイトです。
+    スマホのID、PWを記録しておくと安心です。
+    </div>
+    <img src="https://life-supporter.jp/sp/hxySQ4ff/8BaRR2j8/images/XS012098.jpg">
+    <div style="text-align:center;">
+    <span style="font-size:18px;">
+    <b>さらにアプリプレゼントはラインから。</b>
+    </span>
+    </div>
+</div>
+
+<!-- LINE友達 -->
+<div style="display: flex; justify-content: center; align-items: center;">
+    <div>
+        <a href="https://g0qiltvg.autosns.app/line" class="addfriend_href">
+            <div style="margin: 0 auto; width: 200px; height: 200px;">
+                <div class="qrcode" style="margin:25px 0 0 0; text-align: center;"></div>
+            </div>
+        </a>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    window.addEventListener("load", function() {
+        let url = new URL(window.location.href);
+        let get_params = {};
+        for(entry of url.searchParams) {
+            get_params[entry[0]] = entry[1];
+        }
+                    get_params['content_element_lp_id'] = "";
+                            get_params['scenario_id'] = "";
+                            get_params['partner_id'] = "A8ildpNc2q";
+                for(key in get_params) { 
+            let span = document.createElement('span');
+            let element_id = `proline-copy-qr-get-params-${key}`;
+            span.className = 'proline-copy-qr-get-params';
+            span.setAttribute('data-key', key);
+            span.setAttribute('data-value', get_params[key]);
+            span.setAttribute('id', element_id);
+            let old_element = document.querySelector(`#${element_id}`);
+            if(old_element) {
+                old_element.remove();
+            }
+            document.body.appendChild(span);
+        }
+    });
+</script>
+<script src="https://autosns.jp/js/zbp/jquery.qrcode.min.js"></script>
+<script src="https://g0qiltvg.autosns.app/copy-qr/js?height=200&show=1"></script>
+<p><br></p> 
+<!-- ここまでQRコード -->  
+<div style="display: flex; justify-content: center;">
+    <a href="https://g0qiltvg.autosns.app/line" class="addfriend_href">
+        <img width="300" src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png">
+    </a>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    window.addEventListener("load", function() {
+        let url = new URL(window.location.href);
+        let get_params = {};
+        for(entry of url.searchParams) {
+            get_params[entry[0]] = entry[1];
+        }
+                    get_params['content_element_lp_id'] = "";
+                            get_params['scenario_id'] = "";
+                            get_params['partner_id'] = "A8ildpNc2q";
+                for(key in get_params) { 
+            let span = document.createElement('span');
+            let element_id = `proline-copy-qr-get-params-${key}`;
+            span.className = 'proline-copy-qr-get-params';
+            span.setAttribute('data-key', key);
+            span.setAttribute('data-value', get_params[key]);
+            span.setAttribute('id', element_id);
+            let old_element = document.querySelector(`#${element_id}`);
+            if(old_element) {
+                old_element.remove();
+            }
+            document.body.appendChild(span);
+        }
+    });
+</script>
+<script src="https://autosns.jp/js/zbp/jquery.qrcode.min.js"></script>
+<script src="https://g0qiltvg.autosns.app/copy-qr/js?height=&show=0"></script>
+<!-- LINE友達 -->
+
+<br><br><br>
+<!-- 14日体験案内-->
+<div style="text-align:center;"><span style="font-size:18px;"><b>以下は14日会員サイト無料体験版のご案内です。</b></span></div>
+    <p style="text-align:center;"><img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012100.jpg" style="width: 200px;"></p>
+    <div style="text-align: center; margin-bottom: 50px;">
+  <a href="https://life-supporter.jp/lp/HRSuykFf" style="display: inline-block; 
+            padding: 20px 50px; 
+            background-color: #007bff; 
+            color: #ffffff; 
+            font-size: 22px; 
+            font-weight: bold; 
+            text-decoration: none; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease;">
+    無料体験案内を確認する
+  </a>
+</div>
+
+<p><br></p>
